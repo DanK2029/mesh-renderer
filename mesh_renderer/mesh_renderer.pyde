@@ -1,5 +1,3 @@
-# Sample code for starting the mesh processing project
-
 rotate_flag = True    # automatic rotation of model?
 time = 0   # keep track of passing time, for automatic rotation
 
@@ -18,7 +16,7 @@ color_faces_white = 0
 dual_iteration = 0
 
 
-# initalize stuff
+# initalize
 def setup():
     size (600, 600, OPENGL)
     noStroke()
@@ -53,17 +51,13 @@ def draw():
     specular (0, 0, 0)            # no specular highlights
     shininess (1.0)
   
-    rotate (time, 1.0, 0.0, 0.0)
-
-    # THIS IS WHERE YOU SHOULD DRAW THE MESH
-    
+    rotate (time, 1.0, 0.0, 0.0)  
        
-    
     draw_mesh()
     
     popMatrix()
     
-    # maybe step forward in time (for object rotation)
+    # step forward in time (for object rotation)
     if rotate_flag:
         time += 0.02
         
@@ -73,8 +67,6 @@ def reset():
     vertex_table = []
     rand_face_colors_list = []
     opposite_table = []
-    
-    
     
 def dual():
     global vertex_table, geometry_table
@@ -97,13 +89,11 @@ def dual():
         while(True):
             
             if (visited[si] == True):
-                #println("Repeat visit at: " + str(si))
                 break
-            #println("visited: " + str(si))
+
             visited[si] = True
             si = swing(si)
-            #if (i == si):
-            #   break
+
             vert1 = geometry_table[vertex_table[(si/3) * 3]]
             vert2 = geometry_table[vertex_table[((si/3) * 3) + 1]]
             vert3 = geometry_table[vertex_table[((si/3) * 3) + 2]]
@@ -112,10 +102,8 @@ def dual():
             for j in range(len(centroid_table)):
                 if (vertices_equal(centroid_table[j], vert_cent)):
                     neighbor_table.append(j)
-                    #new_vertex_table.append(j)
             
         if (len(neighbor_table) > 3):
-            #print "have to split this up" + str(neighbor_table)
             poly_centroid = polygon_centroid(neighbor_table, centroid_table)
             centroid_table.append(myVertex(poly_centroid[0], poly_centroid[1], poly_centroid[2], 0))
             new_neighbor_table = []
@@ -125,16 +113,9 @@ def dual():
                 new_neighbor_table.append(neighbor_table[(k+1)%len(neighbor_table)])
                 
             neighbor_table = new_neighbor_table
-            #print neighbor_table
                     
         new_vertex_table = new_vertex_table + neighbor_table
-        #if (len(neighbor_table) != 0):
-         #   print neighbor_table
             
-            
-    #print new_vertex_table
-    #for i in range(len(centroid_table)):    
-    #    print [centroid_table[i].x, centroid_table[i].y, centroid_table[i].z] 
     geometry_table = centroid_table
     vertex_table = new_vertex_table
     calculate_opposite_table()
@@ -142,7 +123,7 @@ def dual():
 def polygon_centroid(vertList, centroid_table):
     global geometry_table
     sum = [0, 0, 0]
-    #print vertList
+
     for i in range(len(vertList)):
         v = centroid_table[vertList[i]]
         vec = [v.x, v.y, v.z]
@@ -212,14 +193,13 @@ def keyPressed():
     elif key == 'd':
         # calculate the dual mesh
         dual()
-        #dual_iteration = dual_iteration + 1
     elif key == 'q':
         exit()
         
         
     calculate_rand_face_colors()
 
-# read in a mesh file (THIS NEEDS TO BE MODIFIED !!!)
+# read in a mesh file
 def read_mesh(filename):
     reset()
     global geometry_table, vertex_table, num_vertices, num_faces
@@ -320,7 +300,6 @@ def calculate_vertex_normal(i):
         neighbors.append(next(swing(i)))
         i = swing(i)
         
-    
     sum = [0,0,0]
     for j in range(len(neighbors)):
         face_num = neighbors[j]/3
@@ -333,15 +312,6 @@ def calculate_vertex_normal(i):
         sum = vector_add(sum, face_normal)
     
     sum = [sum[0]/len(neighbors), sum[1]/len(neighbors), sum[2]/len(neighbors)]
-        
-        
-        #a_v1 = vertex_sub(geometry_table[vertex_table[neighbors[j]]], geometry_table[corner])
-        #if (j+1 == len(neighbors)):
-        #    a_v2 = vertex_sub(geometry_table[vertex_table[neighbors[0]]], geometry_table[corner])
-        #else:
-        #    a_v2 = vertex_sub(geometry_table[vertex_table[neighbors[j+1]]], geometry_table[corner])
-        #cross_vector = vector_cross_product(a_v1, a_v2)
-        #sum = vector_add(sum, cross_vector)
     
     return sum
             
@@ -369,10 +339,7 @@ def normalize_vector(v):
     d = sqrt( sq(v[0]) + sq(v[1]) + sq(v[2]) )
     return [ v[0]/d , v[1]/d , v[2]/d ]
     
-        
-    
-    
-        
+            
 class myVertex():
     
     def __init__(self, x, y, z, i):
